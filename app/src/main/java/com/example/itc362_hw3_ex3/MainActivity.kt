@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var currentIndex = 0
+    private var numCorrectAnswers = 0
     private lateinit var binding:ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = questionBank[currentIndex].answer
 
         val messageResId = if (userAnswer == correctAnswer) {
+            numCorrectAnswers += 1
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
@@ -81,6 +83,22 @@ class MainActivity : AppCompatActivity() {
 
         binding.trueButton.isEnabled = false
         binding.falseButton.isEnabled = false
+
+        if (currentIndex == questionBank.size - 1) {
+            showScore()
+        }
+    }
+
+    private fun showScore() {
+        // Calculate user's score and convert to string with % at the end
+        val userScore = (numCorrectAnswers.toDouble() / questionBank.size) * 100
+        val userScoreString = String.format("%.1f %%", userScore)
+
+        // Display the user's score in a toast
+        Toast.makeText(this, "Your score: $userScoreString", Toast.LENGTH_LONG).show()
+
+        // Reset number of correct answers to zero
+        numCorrectAnswers = 0
     }
 
     override fun onStart() {
